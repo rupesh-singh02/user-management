@@ -10,10 +10,11 @@ use App\Models\User;
 
 class UserManagement extends Component
 {
-    public $users, $roles, $logs, $last_user, $name, $email, $password, $contact_no, $role_id = '', $status = '', $userId;
-    public $showNotification = false; 
+    public $users, $roles, $logs, $last_user, $name, $email, $password, $contact_no, $role_id = '', $status = '', $userId, $deleteUserId;
+    public $showNotification = true;
     public $notificationTitle = '';
     public $notificationMessage = '';
+    public $confirmDelete = false;
 
     public function render()
     {
@@ -70,6 +71,35 @@ class UserManagement extends Component
             $this->notify('Error', 'An error occurred while saving the user. Please try again!');
         }
     }
+
+
+    public function deleteUser()
+    {
+        if ($this->deleteUserId) {
+            try {
+                $user = User::findOrFail($this->deleteUserId);
+
+                $this->createLog($user, 'User Deleted', 'User deleted successfully');
+
+                $user->delete();
+
+                $this->notify('Success', 'User deleted successfully!');
+
+                $this->users = User::all();
+
+                $this->confirmDelete = false;
+            } catch (\Exception $e) {
+                $this->notify('Error', 'An error occurred while deleting the user. Please try again!');
+            }
+        }
+    }
+
+    public function askDeleteConfirmation($userId)
+    {
+        $this->deleteUserId = $userId;
+        $this->confirmDelete = true;
+    }
+
 
     private function createLog($user, $action, $description)
     {

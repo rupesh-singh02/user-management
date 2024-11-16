@@ -1,5 +1,6 @@
 <div class="xl:px-28">
     @include('components.message_modal')
+    @include('components.confirmation_modal')
 
     <!-- Main Container -->
     <div class="flex flex-wrap p-2 mt-14 rounded-lg items-stretch">
@@ -241,9 +242,11 @@
                             <button class="py-0 px-1 rounded-lg">
                                 <i class="fa-solid fa-pen-to-square text-blue-600"></i>
                             </button>
-                            <button class="py-0 px-1 rounded-lg">
+                            <button wire:click="askDeleteConfirmation({{ $user->id }})" class="py-0 px-1 rounded-lg">
                                 <i class="fa-solid fa-trash text-red-600"></i>
                             </button>
+                        </td>
+
                         </td>
                     </tr>
                 @endforeach
