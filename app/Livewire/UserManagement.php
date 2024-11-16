@@ -10,11 +10,16 @@ use App\Models\User;
 
 class UserManagement extends Component
 {
-    public $users, $roles, $logs, $last_user, $name, $email, $password, $contact_no, $role_id = '', $status = '', $userId, $deleteUserId;
-    public $showNotification = true;
+    public $users, $roles, $logs, $last_user, $name, $email, $password, $contact_no, $userId, $deleteUserId, $role_id = '', $status = '';
+
+    public $showNotification = false;
+    public $confirmDelete = false;
+    public $showEditModal = false;
+
     public $notificationTitle = '';
     public $notificationMessage = '';
-    public $confirmDelete = false;
+
+    public $editUserId, $editName, $editEmail, $editContact, $editRole, $editStatus;
 
     public function render()
     {
@@ -41,55 +46,84 @@ class UserManagement extends Component
             $userData = [
                 'name' => $this->name,
                 'email' => $this->email,
+                'password' => bcrypt($this->password),
                 'contact_no' => $this->contact_no,
                 'role_id' => $this->role_id,
                 'status' => $this->status,
             ];
-            if ($this->password) {
-                $userData['password'] = bcrypt($this->password);
-            }
 
-            if ($this->userId) {
-                // Update existing user
-                $user = User::findOrFail($this->userId);
-                $user->update($userData);
-                $this->createLog($user, 'User Updated', 'User details updated successfully');
-            } else {
-                // Create a new user
-                $user = User::create($userData);
-                $this->createLog($user, 'User Created', 'New user created successfully');
-            }
+
+            $user = User::create($userData);
+
+            $this->createLog($user, 'User Created', 'New user created successfully');
 
             $this->resetFields();
 
             $this->notify('Success', 'User saved successfully!');
         } catch (ValidationException $e) {
             $errorMessages = $e->validator->errors()->all();
-            $this->notify('Validation Error', implode("\n", $errorMessages));
+            $this->notify('Error', implode("\n", $errorMessages));
         } catch (\Exception $e) {
             // dd($e);
             $this->notify('Error', 'An error occurred while saving the user. Please try again!');
         }
     }
 
+    public function viewUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->editUserId = $user->id;
+        $this->editName = $user->name;
+        $this->editEmail = $user->email;
+        $this->editContact = $user->contact_no;
+        $this->editRole = $user->role_id;
+        $this->editStatus = $user->status;
+
+        $this->showEditModal = true;
+    }
+
+    public function updateUser()
+    {
+        try {
+            $user = User::findOrFail($this->editUserId);
+
+            $user->update([
+                'name' => $this->editName,
+                'email' => $this->editEmail,
+                'contact_no' => $this->editContact,
+                'role_id' => $this->editRole,
+                'status' => $this->editStatus,
+            ]);
+
+            $this->createLog($user, 'User Updated', 'User updated successfully!');
+
+            $this->showEditModal = false;
+
+            $this->notify('Success', 'User updated successfully!');
+
+        } catch (ValidationException $e) {
+            $errorMessages = $e->validator->errors()->all();
+            $this->notify('Error', implode("\n", $errorMessages));
+        } catch (\Exception $e) {
+            // dd($e);
+            $this->notify('Error', 'An error occurred while saving the user. Please try again!');
+        }
+    }
 
     public function deleteUser()
     {
         if ($this->deleteUserId) {
+
             try {
                 $user = User::findOrFail($this->deleteUserId);
-
                 $this->createLog($user, 'User Deleted', 'User deleted successfully');
-
                 $user->delete();
-
                 $this->notify('Success', 'User deleted successfully!');
-
-                $this->users = User::all();
-
-                $this->confirmDelete = false;
             } catch (\Exception $e) {
                 $this->notify('Error', 'An error occurred while deleting the user. Please try again!');
+            } finally {
+                $this->confirmDelete = false;
             }
         }
     }
@@ -99,7 +133,6 @@ class UserManagement extends Component
         $this->deleteUserId = $userId;
         $this->confirmDelete = true;
     }
-
 
     private function createLog($user, $action, $description)
     {
@@ -113,7 +146,7 @@ class UserManagement extends Component
     public function notify($title, $message)
     {
         $this->notificationTitle = $title;
-        $this->notificationMessage = nl2br($message); // Convert newlines to <br> for proper display
+        $this->notificationMessage = nl2br($message);
         $this->showNotification = true;
     }
 

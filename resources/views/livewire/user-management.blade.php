@@ -1,6 +1,7 @@
 <div class="xl:px-28">
     @include('components.message_modal')
     @include('components.confirmation_modal')
+    @include('components.edit_user_modal')
 
     <!-- Main Container -->
     <div class="flex flex-wrap p-2 mt-14 rounded-lg items-stretch">
@@ -9,7 +10,7 @@
         <div class="w-full xl:w-2/5 pl-5 pr-2">
             <div class="bg-gray-800 rounded-lg shadow-md">
                 <div class="flex items-center border-b border-gray-600 p-3 pl-10">
-                    <h4 class="text-lg font-bold text-white flex-grow">ADD USER</h4>
+                    <h4 class="text-lg font-bold text-white flex-grow">Add User</h4>
                 </div>
                 <div class="px-10 py-7">
                     <form id="userForm" wire:submit.prevent="store" class="space-y-4">
@@ -147,7 +148,7 @@
                         </div>
                         <div class="flex items-center justify-between text-white">
                             <i class="fa-solid fa-hat-cowboy text-blue-300 text-2xl"></i>
-                            <span id="last-status" class="ml-3 text-green-500">
+                            <span id="last-status" class="ml-3">
                                 {{ $last_user && $last_user->role_id ? $last_user->role->name : "Role Assigned" }}
                             </span>
                         </div>
@@ -201,7 +202,7 @@
 
                 </div>
                 <div class="p-3 pl-4 border-t border-gray-600 text-white">
-                    <p class="text-red-400 text-xs">*Note : Only last 4 logs will be shown here</p>
+                    <p class="text-red-400 text-xs">*Note : Only last 6 logs will be shown here</p>
                 </div>
             </div>
         </div>
@@ -239,8 +240,8 @@
                             </span>
                         </td>
                         <td class="px-4 py-2 text-center">
-                            <button class="py-0 px-1 rounded-lg">
-                                <i class="fa-solid fa-pen-to-square text-blue-600"></i>
+                            <button wire:click="viewUser({{ $user->id }})" class="py-0 px-1 rounded-lg">
+                                <i class="fa-solid fa-eye text-blue-600"></i>
                             </button>
                             <button wire:click="askDeleteConfirmation({{ $user->id }})" class="py-0 px-1 rounded-lg">
                                 <i class="fa-solid fa-trash text-red-600"></i>
