@@ -1,41 +1,48 @@
-<div>
-
+<div class="xl:px-28">
     @include('components.message_modal')
 
-    <!-- Top Container -->
-    <div class="flex flex-wrap p-2 mt-5 rounded-lg items-stretch">
+    <!-- Main Container -->
+    <div class="flex flex-wrap p-2 mt-14 rounded-lg items-stretch">
 
-        <!-- Adding User -->
-        <div class="w-full xl:w-1/2 pl-5 pr-2">
+        <!-- Left Column: User Form -->
+        <div class="w-full xl:w-2/5 pl-5 pr-2">
             <div class="bg-gray-800 rounded-lg shadow-md">
-                <div class="flex items-center border-b border-gray-600 p-3 pl-7">
+                <div class="flex items-center border-b border-gray-600 p-3 pl-10">
                     <h4 class="text-lg font-bold text-white flex-grow">ADD USER</h4>
                 </div>
                 <div class="px-10 py-7">
                     <form id="userForm" wire:submit.prevent="store" class="space-y-4">
                         <!-- Full Name -->
                         <div>
-                            <label for="userName" class="block text-gray-400 mb-1">Full Name</label>
+                            <label for="userName" class="block text-gray-400 mb-1 text-sm">Full Name</label>
                             <input type="text" id="userName" name="name" wire:model="name"
                                 placeholder="Enter employee name"
-                                class="w-full p-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full py-1 px-3 rounded border border-gray-900 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 required>
                         </div>
                         <!-- Email -->
                         <div>
-                            <label for="email" class="block text-gray-400 mb-1">Email</label>
+                            <label for="email" class="block text-gray-400 mb-1 text-sm">Email</label>
                             <input type="email" id="email" name="email" wire:model="email"
                                 placeholder="Enter employee email"
-                                class="w-full p-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full py-1 px-3 rounded border border-gray-700 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                required>
+                        </div>
+                        <!-- Contact No -->
+                        <div>
+                            <label for="phoneNo" class="block text-gray-400 mb-1 text-sm">Contact No.</label>
+                            <input type="text" id="phoneNo" name="phone" wire:model="contact_no"
+                                placeholder="Enter contact number"
+                                class="w-full py-1 px-3 rounded border border-gray-700 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 required>
                         </div>
                         <!-- Password -->
                         <div x-data="{ showPassword: false }">
-                            <label for="password" class="block text-gray-400 mb-1">Password</label>
+                            <label for="password" class="block text-gray-400 mb-1 text-sm">Password</label>
                             <div class="relative">
                                 <input :type="showPassword ? 'text' : 'password'" id="password" name="password"
                                     wire:model="password" placeholder="Enter employee password"
-                                    class="w-full p-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                                    class="w-full py-1 px-3 rounded border border-gray-700 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-10"
                                     required>
 
                                 <!-- Eye icon (visible when password is hidden) -->
@@ -68,39 +75,181 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Contact No -->
+                        <!-- Role -->
                         <div>
-                            <label for="phoneNo" class="block text-gray-400 mb-1">Contact No.</label>
-                            <input type="text" id="phoneNo" name="phone" wire:model="contact_no"
-                                placeholder="Enter contact number"
-                                class="w-full p-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            <label for="role_id" class="block text-gray-400 mb-1 text-sm">Role</label>
+                            <select id="role_id" name="role_id" wire:model="role_id"
+                                class="w-full py-1 px-3 rounded border border-gray-700 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 required>
+                                <option value="" disabled selected>Asssign a role</option>
+                                @foreach ($roles as $role)
+                                    <option value={{ $role->id }}>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <!-- Status -->
                         <div>
-                            <label for="status" class="block text-gray-400 mb-1">Status</label>
+                            <label for="status" class="block text-gray-400 mb-1 text-sm">Status</label>
                             <select id="status" name="status" wire:model="status"
-                                class="w-full p-2 rounded border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full py-1 px-3 rounded border border-gray-700 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                                 required>
                                 <option value="" disabled selected>Choose...</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
-
                         </div>
                         <!-- Submit Button -->
                         <div class="text-right pt-3">
                             <button
-                                class="px-8 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                class="px-6 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500">
                                 Create
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+        </div>
 
+        <!-- Center Column: Last Added User -->
+        <div class="w-full xl:w-2/5 pr-5 pl-2">
+            <div class="h-full bg-gray-800 rounded-lg shadow-md flex flex-col justify-between">
+                <div class="flex items-center border-b border-gray-600 p-3 pl-6">
+                    <h4 class="text-lg font-bold text-white">Last Added User</h4>
+                </div>
+                <div class="flex flex-col items-center justify-between px-10 py-8 mt-0 h-full">
+                    <!-- User Image -->
+                    <div class="w-24 mb-5 rounded-full overflow-hidden">
+                        <img src="{{ $last_user->image_url ?? asset('assets/user.png') }}" alt="User"
+                            class="w-full h-full object-cover">
+                    </div>
+                    <!-- User Details -->
+                    <div class="w-full space-y-3">
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-id-card text-blue-300 text-2xl"></i>
+                            <p id="last-id" class="ml-3">{{ $last_user->id ?? "ID" }}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-user text-blue-300 text-2xl"></i>
+                            <p id="last-username" class="ml-3">{{ $last_user->name ?? "Full Name" }}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-envelope text-blue-300 text-2xl"></i>
+                            <p id="last-email" class="ml-3">{{ $last_user->email ?? "Email" }}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-phone text-blue-300 text-2xl"></i>
+                            <p id="last-phone" class="ml-3">{{ $last_user->contact_no ?? "Contact No." }}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-calendar-days text-blue-300 text-2xl"></i>
+                            <p id="last-date" class="ml-3">{{ $last_user->created_at ?? "User Created Date" }}</p>
+                        </div>
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-hat-cowboy text-blue-300 text-2xl"></i>
+                            <span id="last-status" class="ml-3 text-green-500">
+                                {{ $last_user && $last_user->role_id ? $last_user->role->name : "Role Assigned" }}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between text-white">
+                            <i class="fa-solid fa-briefcase text-blue-300 text-2xl"></i>
+                            <span id="last-status" class="ml-3 text-green-500">
+                                <span id="last-status" class="ml-3 text-green-500">
+                                    {{ $last_user ? ($last_user->status == "1" ? "Active" : "Inactive") : "Status" }}
+                                </span>
+
+                            </span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="p-5 pl-6 border-t border-gray-600 text-white">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Current user log -->
+        <div class="w-full xl:w-1/5 pr-5 pl-2">
+            <div class="h-full bg-gray-800 rounded-lg shadow-md flex flex-col justify-between">
+                <div class="flex items-center border-b border-gray-600 p-3 pl-6">
+                    <h4 class="text-lg font-bold text-white flex-grow">Logs</h4>
+                </div>
+                <div class="flex flex-col items-center justify-between px-6 pt-7 h-full">
+                    <!-- Log Image -->
+                    <div class="w-24 h-24 rounded-full overflow-hidden mb-4">
+                        <img src="{{ asset('assets/log.png') }}" alt="User" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Log Details -->
+                    <div class="w-full space-y-3 mt-5 flex-grow">
+                        <ul class="list-none text-white text-sm">
+                            @foreach ($logs as $log)
+                                <li class="mb-3 flex">
+                                    <!-- Custom Bullet -->
+                                    <span class="w-2.5 h-2.5 bg-white rounded-full mr-3 mt-1"></span>
+                                    <div>
+                                        <!-- Action -->
+                                        <p class="font-bold">{{ $log->action }}</p>
+                                        <!-- Detail -->
+                                        <p class="text-gray-400">{{ $log->description }}</p>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+
+
+
+                </div>
+                <div class="p-3 pl-4 border-t border-gray-600 text-white">
+                    <p class="text-red-400 text-xs">*Note : Only last 4 logs will be shown here</p>
+                </div>
+            </div>
         </div>
 
     </div>
+
+
+
+    <!-- User Data Table -->
+    <div class="px-7 py-2 my-4 rounded-lg">
+        <table class="min-w-full table-auto bg-gray-800 text-gray-300 rounded-lg shadow-md">
+            <thead>
+                <tr class="border-b border-gray-600 bg-gray-900">
+                    <th class="px-4 py-4 text-center ">ID</th>
+                    <th class="px-4 py-4 text-center ">Name</th>
+                    <th class="px-4 py-4 text-center">Email</th>
+                    <th class="px-4 py-4 text-center">Phone</th>
+                    <th class="px-4 py-4 text-center">Role</th>
+                    <th class="px-4 py-4 text-center">Status</th>
+                    <th class="px-4 py-4 text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($users as $user)
+                    <tr class="hover:bg-gray-600 border-b border-gray-600">
+                        <td class="px-4 py-2 text-center text-sm">#test_{{ $user->id }}</td>
+                        <td class="px-4 py-2 text-center text-sm">{{ $user->name }}</td>
+                        <td class="px-4 py-2 text-center text-sm">{{ $user->email }}</td>
+                        <td class="px-4 py-2 text-center text-sm">{{ $user->contact_no }}</td>
+                        <td class="px-4 py-2 text-center text-sm">{{ $user->role->name }}</td>
+                        <td class="px-4 py-2 text-center text-sm">
+                            <span
+                                class="inline-block px-4 py-1 rounded-full text-sm {{ $user->status === '1' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' }}">
+                                {{ $user->status === '1' ? 'Active' : 'Inactive' }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                            <button class="py-0 px-1 rounded-lg">
+                                <i class="fa-solid fa-pen-to-square text-blue-600"></i>
+                            </button>
+                            <button class="py-0 px-1 rounded-lg">
+                                <i class="fa-solid fa-trash text-red-600"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
 
 </div>
