@@ -59,13 +59,13 @@ class UserManagement extends Component
 
             $this->resetFields();
 
-            $this->notify('Success', 'User saved successfully!');
+            $this->notify('Success', 'User created successfully!');
         } catch (ValidationException $e) {
             $errorMessages = $e->validator->errors()->all();
             $this->notify('Error', implode("\n", $errorMessages));
         } catch (\Exception $e) {
             // dd($e);
-            $this->notify('Error', 'An error occurred while saving the user. Please try again!');
+            $this->notify('Error', 'An error occurred while creating the user. Please try again!');
         }
     }
 
