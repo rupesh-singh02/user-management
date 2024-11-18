@@ -48,10 +48,11 @@ jobs:
         run: php artisan test --env=testing
 
       # Cache dependencies for faster builds (optional)
-      - name: Cache Composer dependencies
-        uses: actions/cache@v2
+      - name: Cache dependencies
+        uses: actions/cache@v3
         with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
+            ${{ runner.os }}-node-
+
