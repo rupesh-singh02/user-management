@@ -12,6 +12,16 @@ jobs:
   test:
     runs-on: ubuntu-latest  # Defines the runner operating system
 
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing_db  # Set this to your test database
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping --silent" --health-timeout=30s --health-retries=5
+
     steps:
       # Checkout code
       - name: Checkout code
@@ -35,9 +45,19 @@ jobs:
           cp .env.example .env
           echo "APP_ENV=testing" >> .env
           echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_DATABASE=homestead" >> .env  # Set this to your test database
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=testing_db" >> .env  # Set this to your test database
           echo "DB_USERNAME=root" >> .env
-          echo "DB_PASSWORD=" >> .env
+          echo "DB_PASSWORD=root" >> .env  # Set the root password, if applicable
+
+      # Wait for MySQL to be ready
+      - name: Wait for MySQL to be ready
+        run: |
+          until mysql -h 127.0.0.1 -u root -proot -e 'SHOW DATABASES;'; do
+            echo "Waiting for database to be ready..."
+            sleep 5
+          done
 
       # Run database migrations
       - name: Run database migrations
@@ -48,11 +68,10 @@ jobs:
         run: php artisan test --env=testing
 
       # Cache dependencies for faster builds (optional)
-      - name: Cache dependencies
+      - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-
-
+            ${{ runner.os }}-composer-
