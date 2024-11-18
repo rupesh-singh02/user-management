@@ -51,6 +51,10 @@ jobs:
           echo "DB_USERNAME=root" >> .env
           echo "DB_PASSWORD=root" >> .env  # Set the root password, if applicable
 
+      # Generate application key
+      - name: Generate application key
+        run: php artisan key:generate --env=testing
+
       # Wait for MySQL to be ready
       - name: Wait for MySQL to be ready
         run: |
@@ -67,7 +71,7 @@ jobs:
       - name: Run tests
         run: php artisan test --env=testing
 
-      # Cache dependencies for faster builds (optional)
+      # Cache Composer dependencies
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
