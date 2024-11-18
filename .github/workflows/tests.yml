@@ -39,6 +39,20 @@ jobs:
         run: |
           composer install --no-interaction --prefer-dist
 
+      # Install Node.js and npm dependencies
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      # Install npm dependencies
+      - name: Install npm dependencies
+        run: npm install
+
+      # Build assets using Vite
+      - name: Build assets with Vite
+        run: npm run build
+        
       # Set up environment variables for testing
       - name: Set up .env.testing file
         run: |
