@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('contact_no')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->unsignedBigInteger('role_id')->nullable();
             $table->enum('status', [0, 1])->default(1); // 0 - Inactive, 1 - Active
             $table->rememberToken();
