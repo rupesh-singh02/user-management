@@ -52,7 +52,7 @@ jobs:
       # Build assets using Vite
       - name: Build assets with Vite
         run: npm run build
-        
+
       # Set up environment variables for testing
       - name: Set up .env.testing file
         run: |
@@ -83,7 +83,7 @@ jobs:
 
       # Run Laravel tests
       - name: Run tests
-        run: php artisan test --env=testing --no-compile
+        run: php artisan test --env=testing
 
       # Cache Composer dependencies
       - name: Cache Composer dependencies
