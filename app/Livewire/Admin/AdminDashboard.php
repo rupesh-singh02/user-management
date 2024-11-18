@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Admin;
 
+use Livewire\Component;
 use App\Models\Log;
 use App\Models\Role;
 use Illuminate\Validation\ValidationException;
-use Livewire\Component;
 use App\Models\User;
 
-class UserManagement extends Component
+class AdminDashboard extends Component
 {
     public $users, $roles, $logs, $last_user, $name, $email, $password, $contact_no, $userId, $deleteUserId, $role_id = '', $status = '';
 
@@ -23,12 +23,12 @@ class UserManagement extends Component
 
     public function render()
     {
-        $this->users = User::all();
+        $this->users = User::where('id', '!=', auth()->id())->get();
         $this->roles = Role::all();
         $this->last_user = User::with('role')->latest()->first();
         $this->logs = Log::latest()->limit(6)->get();
 
-        return view('livewire.user-management')->layout('layouts/app');
+        return view('livewire.admin.admin-dashboard')->layout('layouts/app');
     }
 
     public function store()

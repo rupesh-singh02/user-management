@@ -1,8 +1,10 @@
 <?php
 
-use App\Livewire\UserManagement;
+use App\Http\Controllers\AuthController;
+use App\Livewire\Admin\AdminDashboard;
+use App\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
+use App\Livewire\Auth\Login;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,13 +17,38 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Route::get('/', UserManagement::class);
+Route::get('/login', Login::class)->name('login')->middleware('guest');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin')->middleware('auth')->group(function () {
+    Route::get('/', AdminDashboard::class)->name('admin.dashboard');
+});
+
+/*
+|--------------------------------------------------------------------------
+| User Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/', Dashboard::class)->name('dashboard')->middleware('auth');
 
 
+/*
+|--------------------------------------------------------------------------
+| Important Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/migration', function () {
-    
     $output = new \Symfony\Component\Console\Output\BufferedOutput();
+
     Artisan::call('migrate', ['--force' => true], $output);
+
+    Artisan::call('db:seed', ['--force' => true], $output);
+
     echo '<pre>';
     return $output->fetch();
 });

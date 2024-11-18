@@ -18,13 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->timestamps();
         });
-
-        // Insert default roles
-        DB::table('roles')->insert([
-            ['name' => 'Admin'],
-            ['name' => 'Manager'],
-            ['name' => 'Employee'],
-        ]);
+        
     }
 
     /**
